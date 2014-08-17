@@ -63,12 +63,18 @@ class DateTime extends Carbon implements ArraySerializableInterface
     const TIMESTAMP = 'U';
 
     /**
-     * @param DateTime $otherDate
-     * @return int
+     * @param Carbon $dt
+     * @param bool   $abs
+     * @return int|void
      */
-    public function secondsSince(DateTime $otherDate)
+    public function diffInMonths(Carbon $dt = null, $abs = true)
     {
-        return $this->getTimestamp() - $otherDate->getTimestamp();
+        $years = $dt->year - $this->year;
+        $months = $dt->month - $this->month;
+
+        $result = $years * self::MONTHS_PER_YEAR + $months;
+
+        return $abs ? abs($result) : $result;
     }
 
     /**

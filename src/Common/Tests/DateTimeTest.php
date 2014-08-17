@@ -80,4 +80,29 @@ class DateTest extends PHPUnit_Framework_TestCase
         $saturday->addWeekday();
         $this->assertEquals(DateTime::MONDAY, $saturday->getDayOfWeek());
     }
+
+    /**
+     * @test
+     */
+    public function testDiffs()
+    {
+        $startOfYear = DateTime::today()->startOfYear();
+        $endOfYear = DateTime::today()->endOfYear();
+        $startOfNextYear = DateTime::today()->startOfYear()->addYear();
+
+        $this->assertEquals(11, $endOfYear->diffInMonths($startOfYear));
+        $this->assertEquals(12, $startOfNextYear->diffInMonths($startOfYear));
+
+        for ($month = DateTime::JANUARY; $month <= DateTime::DECEMBER; $month++) {
+            $monthDate = DateTime::today()->setMonth($month);
+            $start = $monthDate->startOfMonth();
+            $end = clone $monthDate;
+            $end->endOfMonth();
+            $next = clone $start;
+            $next->addMonth();
+
+            $this->assertEquals(0, $end->diffInMonths($start));
+            $this->assertEquals(1, $next->diffInMonths($start));
+        }
+    }
 }
