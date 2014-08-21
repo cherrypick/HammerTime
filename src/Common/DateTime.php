@@ -366,6 +366,18 @@ class DateTime extends Carbon implements ArraySerializableInterface
     }
 
     /**
+     * @param int $week
+     * @return static
+     */
+    public function setWeek($week)
+    {
+        $currentWeek = $this->getWeek();
+        $this->addWeeks($week - $currentWeek);
+
+        return $this;
+    }
+
+    /**
      * @return int
      */
     public function getMilliTimestamp()
