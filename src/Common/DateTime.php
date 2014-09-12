@@ -78,6 +78,59 @@ class DateTime extends Carbon implements ArraySerializableInterface
     }
 
     /**
+     * Add months to the instance. Positive $value travels forward while
+     * negative $value travels into the past.
+     *
+     * In difference to Carbon::addMonths(), this function adds "actual" months and stays in the
+     * requested months, even in the last days of the month (e.g. 2013-05-31 + 1 month = 2013-06-30)
+     *
+     * @param integer $value
+     *
+     * @return static
+     */
+    public function addMonths($value)
+    {
+        $startMonth = $this->getMonth();
+        $this->modify($value . ' months'); // couldn't use addMonths, because this would be a recursive call.
+
+        $reverted = $this->copy();
+        $reverted->modify((-$value) . ' months');
+
+        while ($startMonth != $reverted->getMonth()) {
+            $this->subDay();
+
+            $reverted = $this->copy();
+            $reverted->modify((-$value) . ' months');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Add years to the instance. Positive $value travel forward while
+     * negative $value travel into the past.
+     *
+     * In difference to Carbon::addYears(), this function adds "actual" years and keeps the
+     * current months, even if the month in the next year has not enough days (in leap years)
+     *
+     * @param integer $value
+     *
+     * @return static
+     */
+    public function addYears($value)
+    {
+        $init = $this->copy();
+        $startMonth = $init->getMonth();
+
+        $this->modify($value . ' years');
+        while ($this->format('m') != $startMonth) {
+            $this->modify('-1 day');
+        }
+
+        return $this;
+    }
+
+    /**
      * @param DateTime $otherDate
      * @return bool
      */
