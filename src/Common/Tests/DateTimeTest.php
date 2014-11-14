@@ -139,11 +139,24 @@ class DateTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(new DateTime('2012-02-29 12:00:00'), $date);
     }
 
+    /**
+     * @test
+     */
     public function testAddYears()
     {
         // leap year
         $date = new DateTime('2012-02-29 12:00:00');
         $date->addYear(1);
         $this->assertEquals(new DateTime('2013-02-28 12:00:00'), $date);
+    }
+
+    /**
+     * Test wheter two DateTime-objects have the same date
+     */
+    public function testIsSameDay()
+    {
+        $this->assertTrue(DateTime::today()->isSameDate(DateTime::now()));
+        $this->assertTrue(DateTime::yesterday()->isSameDate(DateTime::now()->subDay()));
+        $this->assertFalse(DateTime::yesterday()->isSameDate(DateTime::today()));
     }
 }

@@ -167,6 +167,15 @@ class DateTime extends Carbon implements ArraySerializableInterface
     }
 
     /**
+     * @param DateTime $otherDate
+     * @return bool
+     */
+    public function isSameDate(DateTime $otherDate)
+    {
+        return $this->copy()->startOfDay()->eq($otherDate->copy()->startOfDay());
+    }
+
+    /**
      * @return bool
      */
     public function isSummerTime()
