@@ -1,0 +1,13 @@
+{
+    "name": "cherrypick/hammertime",
+    "description": "Some extensions to Carbon (a DateTime class)",
+    "license": "MIT",
+	"require": {
+		"nesbot/carbon": "~1.10"
+	},
+    "autoload": {
+        "psr-4": {
+            "CherryPick\\HammerTime\\": "src/"
+        }
+    }
+}

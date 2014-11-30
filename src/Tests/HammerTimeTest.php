@@ -1,11 +1,11 @@
 <?php
 
-namespace CherryPick\Common\Tests;
+namespace CherryPick\CherryTime\Tests;
 
-use CherryPick\Common\DateTime;
+use CherryPick\HammerTime\HammerTime;
 use PHPUnit_Framework_TestCase;
 
-class DateTest extends PHPUnit_Framework_TestCase
+class HammerTimeTest extends PHPUnit_Framework_TestCase
 {
 
     /**
@@ -13,7 +13,7 @@ class DateTest extends PHPUnit_Framework_TestCase
      */
     public function testIsToday()
     {
-        $today = DateTime::today();
+        $today = HammerTime::today();
 
         $this->assertTrue($today->isToday());
         $this->assertFalse($today->subDay()->isToday());
@@ -28,7 +28,7 @@ class DateTest extends PHPUnit_Framework_TestCase
      */
     public function testIsTomorrow()
     {
-        $today = DateTime::today();
+        $today = HammerTime::today();
 
         $this->assertFalse($today->isTomorrow());
         $this->assertFalse($today->subDay()->isTomorrow());
@@ -45,7 +45,7 @@ class DateTest extends PHPUnit_Framework_TestCase
      */
     public function testIsYesterday()
     {
-        $today = DateTime::today();
+        $today = HammerTime::today();
 
         $this->assertFalse($today->isYesterday());
         $this->assertTrue($today->subDay()->isYesterday());
@@ -63,22 +63,22 @@ class DateTest extends PHPUnit_Framework_TestCase
     public function testWeekdays()
     {
         // Test from Monday
-        $monday = DateTime::today()->startOfWeek();
-        $this->assertEquals(DateTime::MONDAY, $monday->getDayOfWeek());
+        $monday = HammerTime::today()->startOfWeek();
+        $this->assertEquals(HammerTime::MONDAY, $monday->getDayOfWeek());
         $monday->addWeekdays(7);
-        $this->assertEquals(DateTime::WEDNESDAY, $monday->getDayOfWeek());
+        $this->assertEquals(HammerTime::WEDNESDAY, $monday->getDayOfWeek());
 
         // Test from Sunday
-        $sunday = DateTime::today()->endOfWeek();
-        $this->assertEquals(DateTime::SUNDAY, $sunday->getDayOfWeek());
+        $sunday = HammerTime::today()->endOfWeek();
+        $this->assertEquals(HammerTime::SUNDAY, $sunday->getDayOfWeek());
         $sunday->addWeekday();
-        $this->assertEquals(DateTime::MONDAY, $sunday->getDayOfWeek());
+        $this->assertEquals(HammerTime::MONDAY, $sunday->getDayOfWeek());
 
         // Test from Saturday
-        $saturday = DateTime::today()->endOfWeek()->subDay();
-        $this->assertEquals(DateTime::SATURDAY, $saturday->getDayOfWeek());
+        $saturday = HammerTime::today()->endOfWeek()->subDay();
+        $this->assertEquals(HammerTime::SATURDAY, $saturday->getDayOfWeek());
         $saturday->addWeekday();
-        $this->assertEquals(DateTime::MONDAY, $saturday->getDayOfWeek());
+        $this->assertEquals(HammerTime::MONDAY, $saturday->getDayOfWeek());
     }
 
     /**
@@ -86,15 +86,15 @@ class DateTest extends PHPUnit_Framework_TestCase
      */
     public function testDiffs()
     {
-        $startOfYear = DateTime::today()->startOfYear();
-        $endOfYear = DateTime::today()->endOfYear();
-        $startOfNextYear = DateTime::today()->startOfYear()->addYear();
+        $startOfYear = HammerTime::today()->startOfYear();
+        $endOfYear = HammerTime::today()->endOfYear();
+        $startOfNextYear = HammerTime::today()->startOfYear()->addYear();
 
         $this->assertEquals(11, $endOfYear->diffInMonths($startOfYear));
         $this->assertEquals(12, $startOfNextYear->diffInMonths($startOfYear));
 
-        for ($month = DateTime::JANUARY; $month <= DateTime::DECEMBER; $month++) {
-            $monthDate = DateTime::today()->setMonth($month);
+        for ($month = HammerTime::JANUARY; $month <= HammerTime::DECEMBER; $month++) {
+            $monthDate = HammerTime::today()->setMonth($month);
             $start = $monthDate->startOfMonth();
             $end = clone $monthDate;
             $end->endOfMonth();
@@ -111,32 +111,44 @@ class DateTest extends PHPUnit_Framework_TestCase
      */
     public function testAddMonth()
     {
-        $date = new DateTime('2014-05-31 12:00:00');
+        $date = new HammerTime('2014-05-31 12:00:00');
         $date->addMonths(1);
-        $this->assertEquals(new DateTime('2014-06-30 12:00:00'), $date);
+        $this->assertEquals(new HammerTime('2014-06-30 12:00:00'), $date);
 
-        $date = new DateTime('2014-05-31 12:00:00');
+        $date = new HammerTime('2014-05-31 12:00:00');
         $date->addMonths(2);
-        $this->assertEquals(new DateTime('2014-07-31 12:00:00'), $date);
+        $this->assertEquals(new HammerTime('2014-07-31 12:00:00'), $date);
+    }
 
-        // sub months
-        $date = new DateTime('2014-05-31 12:00:00');
+    public function testSubMonth()
+    {
+        $date = new HammerTime('2014-05-31 12:00:00');
         $date->subMonths(1);
-        $this->assertEquals(new DateTime('2014-04-30 12:00:00'), $date);
+        $this->assertEquals(new HammerTime('2014-04-30 12:00:00'), $date);
 
-        $date = new DateTime('2014-05-31 12:00:00');
+        $date = new HammerTime('2014-05-31 12:00:00');
         $date->subMonths(2);
-        $this->assertEquals(new DateTime('2014-03-31 12:00:00'), $date);
+        $this->assertEquals(new HammerTime('2014-03-31 12:00:00'), $date);
+    }
 
-        // february
-        $date = new DateTime('2014-01-31 12:00:00');
+    /**
+     * @test
+     */
+    public function testAddMonths_February()
+    {
+        $date = new HammerTime('2014-01-31 12:00:00');
         $date->addMonths(1);
-        $this->assertEquals(new DateTime('2014-02-28 12:00:00'), $date);
+        $this->assertEquals(new HammerTime('2014-02-28 12:00:00'), $date);
+    }
 
-        // leap year
-        $date = new DateTime('2012-01-30 12:00:00');
+    /**
+     * @test
+     */
+    public function testAddMonths_LeapYear()
+    {
+        $date = new HammerTime('2012-01-30 12:00:00');
         $date->addMonths(1);
-        $this->assertEquals(new DateTime('2012-02-29 12:00:00'), $date);
+        $this->assertEquals(new HammerTime('2012-02-29 12:00:00'), $date);
     }
 
     /**
@@ -145,18 +157,18 @@ class DateTest extends PHPUnit_Framework_TestCase
     public function testAddYears()
     {
         // leap year
-        $date = new DateTime('2012-02-29 12:00:00');
+        $date = new HammerTime('2012-02-29 12:00:00');
         $date->addYear(1);
-        $this->assertEquals(new DateTime('2013-02-28 12:00:00'), $date);
+        $this->assertEquals(new HammerTime('2013-02-28 12:00:00'), $date);
     }
 
     /**
-     * Test wheter two DateTime-objects have the same date
+     * Test wheter two HammerTime-objects have the same date
      */
     public function testIsSameDay()
     {
-        $this->assertTrue(DateTime::today()->isSameDate(DateTime::now()));
-        $this->assertTrue(DateTime::yesterday()->isSameDate(DateTime::now()->subDay()));
-        $this->assertFalse(DateTime::yesterday()->isSameDate(DateTime::today()));
+        $this->assertTrue(HammerTime::today()->isSameDate(HammerTime::now()));
+        $this->assertTrue(HammerTime::yesterday()->isSameDate(HammerTime::now()->subDay()));
+        $this->assertFalse(HammerTime::yesterday()->isSameDate(HammerTime::today()));
     }
 }

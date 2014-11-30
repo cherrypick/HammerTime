@@ -1,13 +1,13 @@
 <?php
 
-namespace CherryPick\Common;
+namespace CherryPick\HammerTime;
 
 use Carbon\Carbon;
 
 /**
  * A class supporting DateTime handling.
  */
-class DateTime extends Carbon implements ArraySerializableInterface
+class HammerTime extends Carbon
 {
 
     /**
@@ -74,7 +74,9 @@ class DateTime extends Carbon implements ArraySerializableInterface
 
         $result = $years * self::MONTHS_PER_YEAR + $months;
 
-        return $abs ? abs($result) : $result;
+        return $abs
+            ? abs($result)
+            : $result;
     }
 
     /**
@@ -86,7 +88,7 @@ class DateTime extends Carbon implements ArraySerializableInterface
      *
      * @param integer $value
      *
-     * @return static
+     * @return $this
      */
     public function addMonths($value)
     {
@@ -115,7 +117,7 @@ class DateTime extends Carbon implements ArraySerializableInterface
      *
      * @param integer $value
      *
-     * @return static
+     * @return $this
      */
     public function addYears($value)
     {
@@ -131,46 +133,47 @@ class DateTime extends Carbon implements ArraySerializableInterface
     }
 
     /**
-     * @param DateTime $otherDate
+     * @param HammerTime $otherDate
+     *
      * @return bool
      */
-    public function isBefore(DateTime $otherDate)
+    public function isBefore(HammerTime $otherDate)
     {
         return $this->lt($otherDate);
     }
 
     /**
-     * @param DateTime $otherDate
+     * @param HammerTime $otherDate
      * @return bool
      */
-    public function isAfter(DateTime $otherDate)
+    public function isAfter(HammerTime $otherDate)
     {
         return $this->gt($otherDate);
     }
 
     /**
-     * @param DateTime $otherDate
+     * @param HammerTime $otherDate
      * @return bool
      */
-    public function isBeforeOrEqual(DateTime $otherDate)
+    public function isBeforeOrEqual(HammerTime $otherDate)
     {
         return $this->lte($otherDate);
     }
 
     /**
-     * @param DateTime $otherDate
+     * @param HammerTime $otherDate
      * @return bool
      */
-    public function isAfterOrEqual(DateTime $otherDate)
+    public function isAfterOrEqual(HammerTime $otherDate)
     {
         return $this->gte($otherDate);
     }
 
     /**
-     * @param DateTime $otherDate
+     * @param HammerTime $otherDate
      * @return bool
      */
-    public function isSameDate(DateTime $otherDate)
+    public function isSameDate(HammerTime $otherDate)
     {
         return $this->copy()->startOfDay()->eq($otherDate->copy()->startOfDay());
     }
@@ -207,21 +210,21 @@ class DateTime extends Carbon implements ArraySerializableInterface
     public function toArray()
     {
         return array(
-            'age'            => $this->getAge(),
-            'quarter'        => $this->getQuarter(),
-            'day'            => $this->getDay(),
-            'month'          => $this->getMonth(),
-            'year'           => $this->getYear(),
-            'hour'           => $this->getHour(),
-            'minute'         => $this->getMinute(),
-            'second'         => $this->getSecond(),
-            'microsecond'    => $this->getMicrosecond(),
-            'timezone'       => $this->getTimezone(),
-            'timestamp'      => $this->getTimestamp(),
+            'age' => $this->getAge(),
+            'quarter' => $this->getQuarter(),
+            'day' => $this->getDay(),
+            'month' => $this->getMonth(),
+            'year' => $this->getYear(),
+            'hour' => $this->getHour(),
+            'minute' => $this->getMinute(),
+            'second' => $this->getSecond(),
+            'microsecond' => $this->getMicrosecond(),
+            'timezone' => $this->getTimezone(),
+            'timestamp' => $this->getTimestamp(),
             'milliTimestamp' => $this->getMilliTimestamp(),
-            'dayOfWeek'      => $this->getDayOfWeek(),
-            'dayOfYear'      => $this->getDayOfYear(),
-            'week'           => $this->getWeek(),
+            'dayOfWeek' => $this->getDayOfWeek(),
+            'dayOfYear' => $this->getDayOfYear(),
+            'week' => $this->getWeek(),
         );
     }
 
