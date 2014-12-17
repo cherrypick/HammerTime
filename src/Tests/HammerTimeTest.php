@@ -10,6 +10,64 @@ class HammerTimeTest extends PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @dataProvider sameDatesProvider
+     *
+     * @param HammerTime $date1
+     * @param HammerTime $date2
+     * @param HammerTime $date3
+     */
+    public function testIsSameDate(HammerTime $date1, HammerTime $date2, HammerTime $date3)
+    {
+        $this->assertTrue($date1->isSameDate($date2));
+        $this->assertTrue($date2->isSameDate($date1));
+        $this->assertFalse($date1->isSameDate($date3));
+        $this->assertFalse($date3->isSameDate($date2));
+    }
+
+    /**
+     * @test
+     * @dataProvider sameDatesProvider
+     *
+     * @param HammerTime $date1
+     * @param HammerTime $date2
+     * @param HammerTime $date3
+     */
+    public function testIsBeforeOrEqual(HammerTime $date1, HammerTime $date2, HammerTime $date3)
+    {
+        // date1 and date2 are the same.
+        $this->assertFalse($date1->isBefore($date2));
+        $this->assertTrue($date1->isBeforeOrEqual($date2));
+        $this->assertFalse($date2->isBefore($date1));
+        $this->assertTrue($date2->isBeforeOrEqual($date1));
+
+        // date3 is later
+        $this->assertTrue($date1->isBefore($date3));
+        $this->assertTrue($date1->isBeforeOrEqual($date3));
+    }
+
+    /**
+     * @test
+     * @dataProvider sameDatesProvider
+     *
+     * @param HammerTime $date1
+     * @param HammerTime $date2
+     * @param HammerTime $date3
+     */
+    public function testIsAfterOrEqual(HammerTime $date1, HammerTime $date2, HammerTime $date3)
+    {
+        // date1 and date2 are the same.
+        $this->assertFalse($date1->isAfter($date2));
+        $this->assertTrue($date1->isAfterOrEqual($date2));
+        $this->assertFalse($date2->isAfter($date1));
+        $this->assertTrue($date2->isAfterOrEqual($date1));
+
+        // date3 is later
+        $this->assertTrue($date3->isAfter($date1));
+        $this->assertTrue($date3->isAfterOrEqual($date1));
+    }
+
+    /**
+     * @test
      */
     public function testIsToday()
     {
@@ -120,6 +178,9 @@ class HammerTimeTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(new HammerTime('2014-07-31 12:00:00'), $date);
     }
 
+    /**
+     * @ŧest
+     */
     public function testSubMonth()
     {
         $date = new HammerTime('2014-05-31 12:00:00');
@@ -163,12 +224,91 @@ class HammerTimeTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test wheter two HammerTime-objects have the same date
+     * Test all getters and setters.
+     *
+     * @test
      */
-    public function testIsSameDay()
+    public function testGettersAndSetters()
     {
-        $this->assertTrue(HammerTime::today()->isSameDate(HammerTime::now()));
-        $this->assertTrue(HammerTime::yesterday()->isSameDate(HammerTime::now()->subDay()));
-        $this->assertFalse(HammerTime::yesterday()->isSameDate(HammerTime::today()));
+        $date = new HammerTime();
+
+        // dates
+        $date->setDay(14);
+        $this->assertEquals(14, $date->getDay());
+
+        $date->setMonth(12);
+        $this->assertEquals(12, $date->getMonth());
+
+        $date->setYear(1991);
+        $this->assertEquals(1991, $date->getYear());
+
+        $this->assertEquals(HammerTime::SATURDAY, $date->getDayOfWeek()); // 1991-12-14 was a Saturday
+        $this->assertEquals(31, $date->getDaysInMonth()); // December has 31 days.
+        $this->assertEquals(50, $date->getWeekOfYear());
+        $this->assertEquals(2, $date->getWeekOfMonth());
+        $this->assertEquals(347, $date->getDayOfYear());
+        $this->assertEquals(4, $date->getQuarter());
+        $this->assertFalse($date->isSummerTime());
+
+        $date->setHour(13);
+        $this->assertEquals(13, $date->getHour());
+
+        $date->setMinute(37);
+        $this->assertEquals(37, $date->getMinute());
+
+        $date->setSecond(42);
+        $this->assertEquals(42, $date->getSecond());
+
+        $this->assertEquals('1991-12-14 13:37:42', $date->toDateTimeString());
+    }
+
+    /**
+     * @test
+     */
+    public function testToArray()
+    {
+        HammerTime::setTestNow(HammerTime::create(2014, 12, 17, 22, 36, 43, 'Europe/Berlin'));
+        $date = HammerTime::create(2011, 6, 17, 22, 35, 42, 'Europe/Berlin');
+
+        $expected = [
+            'age' => 3,
+            'quarter' => 2,
+            'day' => 17,
+            'month' => 6,
+            'year' => 2011,
+            'hour' => 22,
+            'minute' => 35,
+            'second' => 42,
+            'microsecond' => 0,
+            'timezone' => new \DateTimeZone('Europe/Berlin'),
+            'timestamp' => 1308342942,
+            'milliTimestamp' => 1308342942000,
+            'dayOfWeek' => HammerTime::FRIDAY,
+            'dayOfYear' => 167,
+            'week' => 24,
+        ];
+        $this->assertEquals($expected, $date->toArray());
+    }
+
+    /**
+     * Returns date to compare dates with.
+     * The first and second are equal, the third isn't (but after the first).
+     *
+     * @return array
+     */
+    public function sameDatesProvider()
+    {
+        return [
+            [
+                HammerTime::create(2014, 2, 3, 12, 45, 3),
+                HammerTime::create(2014, 2, 3, 12, 45, 3),
+                HammerTime::create(2014, 2, 4, 12, 45, 3),
+            ],
+            [
+                HammerTime::create(2014, 2, 3),
+                HammerTime::create(2014, 2, 3),
+                HammerTime::create(2014, 3, 5),
+            ],
+        ];
     }
 }
