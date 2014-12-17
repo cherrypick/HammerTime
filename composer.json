@@ -1,6 +1,16 @@
 {
     "name": "cherrypick/hammertime",
     "description": "Some extensions to Carbon (a DateTime class)",
+    "authors": [
+        {
+            "name": "Markus Fasselt",
+            "email": "markus.fasselt@gmail.com"
+        },
+        {
+            "name": "Konstantin Möllers",
+            "email": "ksm.moellers@gmail.com"
+        }
+    ],
     "license": "MIT",
 	"require": {
 		"nesbot/carbon": "~1.10"
