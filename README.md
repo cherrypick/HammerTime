@@ -1,5 +1,8 @@
-# HammerTime
-[Alright stop!](http://www.youtube.com/watch?v=6y1qzEx0Ry4&feature=youtu.be&t=2m7s) This date library extends [Carbon](https://github.com/briannesbitt/Carbon) with some more sophisticated date calculations and getters / setters for all date parts.
+# Alright stop … HammerTime!
+
+![MC Hammer having a Hammer time](http://media2.giphy.com/media/kgKrO1A3JbWTK/giphy.gif)
+
+This date library extends [Carbon](https://github.com/briannesbitt/Carbon) with some more sophisticated date calculations and getters / setters for all date parts.
 
 ## Installation
 Install using composer:
