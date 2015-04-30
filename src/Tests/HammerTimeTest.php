@@ -263,6 +263,27 @@ class HammerTimeTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test to change the day of week.
+     *
+     * @test
+     */
+    public function testSetDayOfWeek()
+    {
+        $date = HammerTime::create(2015, 4, 20, 13, 37, 42);
+
+        $this->assertEquals(HammerTime::MONDAY, $date->getDayOfWeek());
+
+        $date->setDayOfWeek(HammerTime::WEDNESDAY);
+        $this->assertEquals(HammerTime::WEDNESDAY, $date->getDayOfWeek());
+        $this->assertEquals('2015-04-22 13:37:42', $date->toDateTimeString());
+
+        // Sunday is the start of the week
+        $date->setDayOfWeek(HammerTime::SUNDAY);
+        $this->assertEquals(HammerTime::SUNDAY, $date->getDayOfWeek());
+        $this->assertEquals('2015-04-19 13:37:42', $date->toDateTimeString());
+    }
+
+    /**
      * @test
      */
     public function testToArray()

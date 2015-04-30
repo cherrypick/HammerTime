@@ -237,6 +237,20 @@ class HammerTime extends Carbon
     }
 
     /**
+     * @param int $dayOfWeek
+     * @return $this
+     */
+    public function setDayOfWeek($dayOfWeek)
+    {
+        $currentDayOfWeek = $this->getDayOfWeek();
+        $diff = $dayOfWeek - $currentDayOfWeek;
+
+        $this->addDays($diff);
+
+        return $this;
+    }
+
+    /**
      * @return int
      */
     public function getDayOfYear()
