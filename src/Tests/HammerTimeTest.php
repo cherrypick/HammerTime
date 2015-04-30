@@ -224,6 +224,27 @@ class HammerTimeTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
+     */
+    public function testAddWeekDays()
+    {
+        $date = new HammerTime('2015-04-30 12:00:00');
+        $this->assertEquals(HammerTime::THURSDAY, $date->getDayOfWeek());
+
+        $date->addWeekdays(1);
+        $this->assertEquals(HammerTime::FRIDAY, $date->getDayOfWeek());
+        $this->assertEquals(new HammerTime('2015-05-01 12:00:00'), $date);
+
+        $date->addWeekdays(1);
+        $this->assertEquals(HammerTime::MONDAY, $date->getDayOfWeek());
+        $this->assertEquals(new HammerTime('2015-05-04 12:00:00'), $date);
+
+        $date->subWeekdays(3);
+        $this->assertEquals(HammerTime::WEDNESDAY, $date->getDayOfWeek());
+        $this->assertEquals(new HammerTime('2015-04-29 12:00:00'), $date);
+    }
+
+    /**
      * Test all getters and setters.
      *
      * @test

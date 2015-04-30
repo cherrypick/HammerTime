@@ -80,6 +80,31 @@ class HammerTime extends Carbon
     }
 
     /**
+     * Add the given amount of weekdays to the current datetime object. This is necessary as the modification
+     * of the weekday in the internal PHP DateTime removes the time (sets it to 00:00:00).
+     *
+     * @param int $value
+     * @return $this
+     */
+    public function addWeekdays($value)
+    {
+        $direction = $value > 0 ? 1 : -1;
+        $value = abs($value);
+
+        while ($value > 0) {
+            $this->addDays($direction);
+
+            while ($this->isWeekend()) {
+                $this->addDays($direction);
+            }
+
+            $value--;
+        }
+
+        return $this;
+    }
+
+    /**
      * Add months to the instance. Positive $value travels forward while
      * negative $value travels into the past.
      *
