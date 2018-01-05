@@ -2,12 +2,13 @@
 
 namespace CherryPick\HammerTime;
 
-use Carbon\Carbon;
+use Cake\Chronos\Chronos;
+use Cake\Chronos\ChronosInterface;
 
 /**
  * A class supporting DateTime handling.
  */
-class HammerTime extends Carbon
+class HammerTime extends Chronos
 {
 
     /**
@@ -63,11 +64,11 @@ class HammerTime extends Carbon
     const TIMESTAMP = 'U';
 
     /**
-     * @param Carbon $dt
+     * @param ChronosInterface $dt
      * @param bool   $abs
      * @return int|void
      */
-    public function diffInMonths(Carbon $dt = null, $abs = true)
+    public function diffInMonths(ChronosInterface $dt = null, $abs = true)
     {
         $years = $dt->year - $this->year;
         $months = $dt->month - $this->month;
@@ -91,24 +92,24 @@ class HammerTime extends Carbon
         $direction = $value > 0 ? 1 : -1;
         $value = abs($value);
 
+        $date = $this;
         while ($value > 0) {
-            $this->addDays($direction);
-
-            while ($this->isWeekend()) {
-                $this->addDays($direction);
+            $date = $date->addDays($direction);
+            while ($date->isWeekend()) {
+                $date = $date->addDays($direction);
             }
 
             $value--;
         }
 
-        return $this;
+        return $date;
     }
 
     /**
      * Add months to the instance. Positive $value travels forward while
      * negative $value travels into the past.
      *
-     * In difference to Carbon::addMonths(), this function adds "actual" months and stays in the
+     * In difference to ChronosInterface::addMonths(), this function adds "actual" months and stays in the
      * requested months, even in the last days of the month (e.g. 2013-05-31 + 1 month = 2013-06-30)
      *
      * @param integer $value
@@ -118,26 +119,22 @@ class HammerTime extends Carbon
     public function addMonths($value)
     {
         $startMonth = $this->getMonth();
-        $this->modify($value . ' months'); // couldn't use addMonths, because this would be a recursive call.
-
-        $reverted = $this->copy();
-        $reverted->modify((-$value) . ' months');
+        $date = $this->modify($value . ' months'); // couldn't use addMonths, because this would be a recursive call.
+        $reverted = $date->modify((-$value) . ' months');
 
         while ($startMonth != $reverted->getMonth()) {
-            $this->subDay();
-
-            $reverted = $this->copy();
-            $reverted->modify((-$value) . ' months');
+            $date = $date->subDay();
+            $reverted = $date->modify((-$value) . ' months');
         }
 
-        return $this;
+        return $date;
     }
 
     /**
      * Add years to the instance. Positive $value travel forward while
      * negative $value travel into the past.
      *
-     * In difference to Carbon::addYears(), this function adds "actual" years and keeps the
+     * In difference to ChronosInterface::addYears(), this function adds "actual" years and keeps the
      * current months, even if the month in the next year has not enough days (in leap years)
      *
      * @param integer $value
@@ -146,15 +143,15 @@ class HammerTime extends Carbon
      */
     public function addYears($value)
     {
-        $init = $this->copy();
-        $startMonth = $init->getMonth();
+        $date = $this;
+        $startMonth = $this->getMonth();
 
-        $this->modify($value . ' years');
-        while ($this->format('m') != $startMonth) {
-            $this->modify('-1 day');
+        $date = $date->modify($value . ' years');
+        while ($date->getMonth() != $startMonth) {
+            $date = $date->modify('-1 day');
         }
 
-        return $this;
+        return $date;
     }
 
     /**
@@ -270,9 +267,7 @@ class HammerTime extends Carbon
         $currentDayOfWeek = $this->getDayOfWeek();
         $diff = $dayOfWeek - $currentDayOfWeek;
 
-        $this->addDays($diff);
-
-        return $this;
+        return $this->addDays($diff);
     }
 
     /**
@@ -305,9 +300,7 @@ class HammerTime extends Carbon
      */
     public function setHour($hour)
     {
-        $this->hour = $hour;
-
-        return $this;
+        return $this->hour($hour);
     }
 
     /**
@@ -324,9 +317,7 @@ class HammerTime extends Carbon
      */
     public function setMinute($minute)
     {
-        $this->minute = $minute;
-
-        return $this;
+        return $this->minute($minute);
     }
 
     /**
@@ -343,9 +334,7 @@ class HammerTime extends Carbon
      */
     public function setMonth($month)
     {
-        $this->month = $month;
-
-        return $this;
+        return $this->month($month);
     }
 
     /**
@@ -378,9 +367,7 @@ class HammerTime extends Carbon
      */
     public function setSecond($second)
     {
-        $this->second = $second;
-
-        return $this;
+        return $this->second($second);
     }
 
     /**
@@ -421,9 +408,7 @@ class HammerTime extends Carbon
      */
     public function setYear($year)
     {
-        $this->year = $year;
-
-        return $this;
+        return $this->year($year);
     }
 
     /**
@@ -448,9 +433,7 @@ class HammerTime extends Carbon
      */
     public function setDay($day)
     {
-        $this->day = $day;
-
-        return $this;
+        return $this->day($day);
     }
 
     /**
@@ -476,9 +459,8 @@ class HammerTime extends Carbon
     public function setWeek($week)
     {
         $currentWeek = $this->getWeek();
-        $this->addWeeks($week - $currentWeek);
 
-        return $this;
+        return $this->addWeeks($week - $currentWeek);
     }
 
     /**
