@@ -13,7 +13,7 @@
     ],
     "license": "MIT",
 	"require": {
-		"nesbot/carbon": "~1.10"
+		"nesbot/carbon": "~1.24"
 	},
     "autoload": {
         "psr-4": {
