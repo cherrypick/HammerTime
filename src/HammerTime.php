@@ -63,18 +63,19 @@ class HammerTime extends Carbon
     const TIMESTAMP = 'U';
 
     /**
-     * @param Carbon $dt
-     * @param bool   $abs
-     * @return int|void
+     * @param \Carbon\Carbon|\DateTimeInterface|null $date
+     * @param bool                                   $absolute Get the absolute of the difference
+     * @return int
      */
-    public function diffInMonths(Carbon $dt = null, $abs = true)
+    public function diffInMonths($date = null, $absolute = true)
     {
+        $dt = $this->resolveCarbon($date);
         $years = $dt->year - $this->year;
         $months = $dt->month - $this->month;
 
         $result = $years * self::MONTHS_PER_YEAR + $months;
 
-        return $abs
+        return $absolute
             ? abs($result)
             : $result;
     }
