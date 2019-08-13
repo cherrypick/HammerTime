@@ -163,7 +163,7 @@ class HammerTime extends Carbon
      *
      * @return bool
      */
-    public function isBefore(HammerTime $otherDate)
+    public function isBefore($otherDate)
     {
         return $this->lt($otherDate);
     }
@@ -172,7 +172,7 @@ class HammerTime extends Carbon
      * @param HammerTime $otherDate
      * @return bool
      */
-    public function isAfter(HammerTime $otherDate)
+    public function isAfter($otherDate)
     {
         return $this->gt($otherDate);
     }
